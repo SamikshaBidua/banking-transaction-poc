@@ -5,7 +5,6 @@
 ```bash
 # 1. Extract the zip
 unzip banking-poc-images.zip
-cd banking-transaction-poc
 
 # 2. Load the Docker images
 docker load -i banking-poc-backend.tar
