@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(chmod +x /Users/samiksha.bidua/Documents/bank-transaction-poc2/banking-transaction-poc/create-dist.sh)",
+      "Bash(./create-dist.sh)",
+      "Bash(chmod +x /Users/samiksha.bidua/Documents/bank-transaction-poc2/banking-transaction-poc/scripts/export-images.sh)",
+      "Bash(./scripts/export-images.sh)"
+    ]
+  }
+}

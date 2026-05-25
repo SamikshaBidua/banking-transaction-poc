@@ -1,0 +1,22 @@
+services:
+  backend:
+    image: banking-poc-backend:v1.0.0
+    container_name: banking-backend
+    ports:
+      - "8080:8080"
+    networks:
+      - banking-network
+
+  frontend:
+    image: banking-poc-frontend:v1.0.0
+    container_name: banking-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - banking-network
+
+networks:
+  banking-network:
+    driver: bridge

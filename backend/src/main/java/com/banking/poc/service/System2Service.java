@@ -4,6 +4,7 @@ import com.banking.poc.dto.TransactionResponse;
 import com.banking.poc.model.Card;
 import com.banking.poc.model.Transaction;
 import com.banking.poc.repository.TransactionRepository;
+import com.banking.poc.security.CardEncryptor;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -23,7 +24,7 @@ public class System2Service {
         Optional<Card> cardOpt = cardService.findByCardNumber(cardNumber);
 
         if (cardOpt.isEmpty()) {
-            Transaction txn = new Transaction(cardNumber, type, amount, "DECLINED", "Invalid card", userId);
+            Transaction txn = new Transaction(CardEncryptor.encrypt(cardNumber), type, amount, "DECLINED", "Invalid card", userId);
             transactionRepository.save(txn);
             return new TransactionResponse(false, "Invalid card");
         }
@@ -31,14 +32,14 @@ public class System2Service {
         Card card = cardOpt.get();
 
         if (!cardService.validatePin(card, pin)) {
-            Transaction txn = new Transaction(cardNumber, type, amount, "DECLINED", "Invalid PIN", userId);
+            Transaction txn = new Transaction(CardEncryptor.encrypt(cardNumber), type, amount, "DECLINED", "Invalid PIN", userId);
             transactionRepository.save(txn);
             return new TransactionResponse(false, "Invalid PIN");
         }
 
         if ("withdraw".equalsIgnoreCase(type)) {
             if (!cardService.hasSufficientBalance(card, amount)) {
-                Transaction txn = new Transaction(cardNumber, type, amount, "DECLINED", "Insufficient balance", userId);
+                Transaction txn = new Transaction(CardEncryptor.encrypt(cardNumber), type, amount, "DECLINED", "Insufficient balance", userId);
                 transactionRepository.save(txn);
                 return new TransactionResponse(false, "Insufficient balance");
             }
@@ -47,7 +48,7 @@ public class System2Service {
             cardService.processTopUp(card, amount);
         }
 
-        Transaction txn = new Transaction(cardNumber, type, amount, "APPROVED", null, userId);
+        Transaction txn = new Transaction(CardEncryptor.encrypt(cardNumber), type, amount, "APPROVED", null, userId);
         Transaction saved = transactionRepository.save(txn);
 
         return new TransactionResponse(true, "Transaction approved",
